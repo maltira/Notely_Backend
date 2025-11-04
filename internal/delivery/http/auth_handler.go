@@ -64,8 +64,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.SuccessfulAuthResponse{
 		Message:   "authorized",
-		UserID:    user.ID.String(),
-		UserGroup: user.Group.Name,
+		User:      *user,
+		UserGroup: user.Group,
 		Token:     token,
 	})
 }
@@ -77,16 +77,20 @@ func (h *AuthHandler) AuthStatus(c *gin.Context) {
 		return
 	}
 
-	userID, userGroup, err := utils.ValidateToken(tokenStr)
+	userID, _, err := utils.ValidateToken(tokenStr)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Code: 401, Error: "unauthorized"})
 		return
 	}
-
+	user, err := h.userService.GetByID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, dto.SuccessfulAuthResponse{
 		Message:   "authorized",
-		UserID:    userID.String(),
-		UserGroup: userGroup,
+		User:      *user,
+		UserGroup: user.Group,
 		Token:     tokenStr,
 	})
 }

@@ -87,6 +87,16 @@ func (h *UserHandler) GetUserByEmail(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func (h *UserHandler) GetCurrentUser(c *gin.Context) {
+	userID := c.MustGet("userID").(uuid.UUID)
+	user, err := h.service.GetByID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
 func (h *UserHandler) ListUser(c *gin.Context) {
 	users, err := h.service.GetAll()
 	if err != nil {

@@ -1,5 +1,7 @@
 package dto
 
+import "web-lab/internal/entity"
+
 type ErrorResponse struct {
 	Code  int    `json:"code"`
 	Error string `json:"error"`
@@ -10,8 +12,8 @@ type SuccessfulResponse struct {
 }
 
 type SuccessfulAuthResponse struct {
-	Message   string `json:"message"`
-	Token     string `json:"token"`
-	UserID    string `json:"user_id"`
-	UserGroup string `json:"user_group"`
+	Message   string       `json:"message"`
+	Token     string       `json:"token"`
+	User      entity.User  `json:"user_id"`
+	UserGroup entity.Group `json:"user_group"`
 }
