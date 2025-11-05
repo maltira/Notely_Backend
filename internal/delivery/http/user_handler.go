@@ -36,7 +36,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	var req dto.UpdateUserRequest
-	if err := c.ShouldBindJSON(&req); err != nil || req.ID == uuid.Nil || (req.Name == "" && req.Email == "" && req.Password == "" && req.GroupID == uuid.Nil) {
+	if err := c.ShouldBindJSON(&req); err != nil || req.ID == uuid.Nil || (req.Name == "" && req.Email == "" && req.Password == "" && req.GroupID == uuid.Nil && req.IsBlock == nil) {
 		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: 400, Error: "Некорректные данные"})
 		return
 	}

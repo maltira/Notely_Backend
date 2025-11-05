@@ -18,6 +18,7 @@ type UpdateUserRequest struct {
 	Name          string    `json:"name"`
 	Email         string    `json:"email"`
 	Password      string    `json:"password"`
+	IsBlock       *bool     `json:"is_block"`
 	GroupID       uuid.UUID `json:"group_id"`
 	LastVisitTime time.Time `json:"last_visit_time"`
 }

@@ -57,6 +57,9 @@ func (u *userService) Update(user *dto.UpdateUserRequest) error {
 		}
 		oldUser.Password = hashedPassword
 	}
+	if user.IsBlock != nil {
+		oldUser.IsBlock = *user.IsBlock
+	}
 	if user.GroupID != uuid.Nil {
 		oldUser.GroupID = user.GroupID
 	}

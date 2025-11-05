@@ -43,7 +43,6 @@ func initUserModule(r *gin.RouterGroup, db *gorm.DB) {
 	repo := repository.NewUserRepository(db)
 	sc := service.NewUserService(repo)
 	h := http.NewUserHandler(sc)
-
 	userGroup := r.Group("/user").Use(middleware.AuthMiddleware())
 	{
 		userGroup.GET("/:id", h.GetUserByID, middleware.ValidateUUID())
@@ -76,7 +75,7 @@ func initAuthModule(r *gin.RouterGroup, db *gorm.DB) {
 	authGroup := r.Group("/auth")
 	{
 		authGroup.POST("/login", h.Login)
-		authGroup.GET("/logout", h.Logout)
+		authGroup.POST("/logout", h.Logout)
 		authGroup.GET("/status", h.AuthStatus)
 	}
 }

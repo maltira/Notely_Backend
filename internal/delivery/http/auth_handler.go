@@ -6,7 +6,7 @@ import (
 	"time"
 	"web-lab/internal/dto"
 	"web-lab/internal/service"
-	utils "web-lab/pkg/utils"
+	"web-lab/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

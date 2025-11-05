@@ -14,6 +14,6 @@ type SuccessfulResponse struct {
 type SuccessfulAuthResponse struct {
 	Message   string       `json:"message"`
 	Token     string       `json:"token"`
-	User      entity.User  `json:"user_id"`
+	User      entity.User  `json:"user"`
 	UserGroup entity.Group `json:"user_group"`
 }
