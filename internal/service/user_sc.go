@@ -39,32 +39,33 @@ func (u *userService) Create(usr *dto.CreateUserRequest) error {
 	}
 	return u.repo.Create(user)
 }
-func (u *userService) Update(user *dto.UpdateUserRequest) error {
-	oldUser, err := u.repo.GetByID(user.ID)
+func (u *userService) Update(req *dto.UpdateUserRequest) error {
+	oldUser, err := u.repo.GetByID(req.ID)
 	if err != nil {
 		return err
 	}
-	if user.Name != "" {
-		oldUser.Name = user.Name
+
+	if req.Name != "" {
+		oldUser.Name = req.Name
 	}
-	if user.Email != "" {
-		oldUser.Email = user.Email
+	if req.Email != "" {
+		oldUser.Email = req.Email
 	}
-	if user.Password != "" {
-		hashedPassword, err := utils.HashPassword(user.Password)
+	if req.Password != "" {
+		hashedPassword, err := utils.HashPassword(req.Password)
 		if err != nil {
 			return err
 		}
 		oldUser.Password = hashedPassword
 	}
-	if user.IsBlock != nil {
-		oldUser.IsBlock = *user.IsBlock
+	if req.IsBlock != nil {
+		oldUser.IsBlock = *req.IsBlock
 	}
-	if user.GroupID != uuid.Nil {
-		oldUser.GroupID = user.GroupID
+	if req.GroupID != uuid.Nil {
+		oldUser.GroupID = req.GroupID
 	}
-	if !user.LastVisitTime.IsZero() {
-		oldUser.LastVisitAt = user.LastVisitTime
+	if !req.LastVisitTime.IsZero() {
+		oldUser.LastVisitAt = req.LastVisitTime
 	}
 	return u.repo.Update(oldUser)
 }

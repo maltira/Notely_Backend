@@ -29,7 +29,15 @@ func (u *userRepository) Create(user *entity.User) error {
 }
 
 func (u *userRepository) Update(user *entity.User) error {
-	return u.db.Save(&user).Error
+	response := u.db.Model(&entity.User{}).Where("id = ?", user.ID).Updates(map[string]interface{}{
+		"name":          user.Name,
+		"email":         user.Email,
+		"password":      user.Password,
+		"is_block":      user.IsBlock,
+		"group_id":      user.GroupID,
+		"last_visit_at": user.LastVisitAt,
+	})
+	return response.Error
 }
 
 func (u *userRepository) Delete(ID uuid.UUID) error {
