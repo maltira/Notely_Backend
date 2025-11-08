@@ -4,7 +4,7 @@ import (
 	"web-lab/internal/dto"
 	"web-lab/internal/entity"
 	"web-lab/internal/repository"
-	utils "web-lab/pkg/utils"
+	"web-lab/pkg/utils"
 
 	"github.com/google/uuid"
 )
