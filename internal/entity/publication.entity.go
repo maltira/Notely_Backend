@@ -9,6 +9,8 @@ import (
 type Category struct {
 	ID   uuid.UUID `json:"id" gorm:"type:uuid;default:gen_random_uuid();primaryKey; not null"`
 	Name string    `json:"name" gorm:"not null; unique"`
+
+	PublicationCategories []PublicationCategories `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE"`
 }
 
 type Publication struct {
@@ -24,7 +26,7 @@ type Publication struct {
 
 	// Связи
 	User                  User                    `gorm:"foreignKey:UserID;onDelete:CASCADE"`
-	PublicationCategories []PublicationCategories `gorm:"foreignKey:PublicationID;onDelete:CASCADE"`
+	PublicationCategories []PublicationCategories `gorm:"foreignKey:PublicationID;constraint:OnDelete:CASCADE"`
 }
 
 type PublicationCategories struct {
@@ -37,6 +39,5 @@ type PublicationCategories struct {
 	DisplayOrder    int    `json:"display_order" gorm:"default:0"`
 
 	// Связи
-	Publication Publication `gorm:"foreignKey:PublicationID;onDelete:CASCADE"`
-	Category    Category    `gorm:"foreignKey:CategoryID;onDelete:CASCADE"`
+	Category Category `gorm:"foreignKey:CategoryID"`
 }

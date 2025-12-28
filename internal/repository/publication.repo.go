@@ -44,7 +44,11 @@ func (p *publicationRepository) Update(publication *entity.Publication) error {
 
 func (p *publicationRepository) FindByID(publicationID uuid.UUID) (*entity.Publication, error) {
 	var publication entity.Publication
-	err := p.db.Preload("User").First(&publication, publicationID).Error
+	err := p.db.
+		Preload("User").
+		Preload("PublicationCategories").
+		Preload("PublicationCategories.Category").
+		First(&publication, publicationID).Error
 	if err != nil {
 		return nil, err
 	}

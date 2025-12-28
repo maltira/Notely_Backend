@@ -112,7 +112,7 @@ func (s *publicationService) Update(publication *dto.PublicationUpdateRequest) e
 			return errors.New("указано более 4 категорий")
 		}
 
-		// * Удаляем существующие связи этой публикации
+		// * Удаляем существующие связи этой публикации с категориями
 		if err = tx.Where("publication_id = ?", p.ID).
 			Delete(&entity.PublicationCategories{}).Error; err != nil {
 			tx.Rollback()
