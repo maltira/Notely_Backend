@@ -37,7 +37,6 @@ func (p *publicationRepository) Update(publication *entity.Publication) error {
 	response := p.db.Model(&entity.Publication{}).Where("id = ?", publication.ID).Updates(map[string]interface{}{
 		"title":       publication.Title,
 		"description": publication.Description,
-		"categories":  publication.Categories,
 		"updated_at":  time.Now(),
 	})
 	return response.Error
@@ -54,7 +53,11 @@ func (p *publicationRepository) FindByID(publicationID uuid.UUID) (*entity.Publi
 
 func (p *publicationRepository) FindAll() ([]entity.Publication, error) {
 	var publications []entity.Publication
-	if err := p.db.Preload("User").Find(&publications).Error; err != nil {
+	if err := p.db.
+		Preload("User").
+		Preload("PublicationCategories").
+		Preload("PublicationCategories.Category").
+		Find(&publications).Error; err != nil {
 		return nil, err
 	}
 	return publications, nil

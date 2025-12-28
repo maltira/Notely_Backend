@@ -87,7 +87,7 @@ func initPublicationModule(r *gin.RouterGroup, db *gorm.DB) {
 	userRepo := repository.NewUserRepository(db)
 	userSc := service.NewUserService(userRepo)
 	repo := repository.NewPublicationRepository(db)
-	sc := service.NewPublicationService(repo)
+	sc := service.NewPublicationService(repo, db)
 	h := http.NewPublicationHandler(sc, userSc)
 
 	publicationGroup := r.Group("/publication").Use(middleware.AuthMiddleware())

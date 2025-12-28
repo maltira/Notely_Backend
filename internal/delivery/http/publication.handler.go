@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"web-lab/internal/dto"
 	"web-lab/internal/service"
@@ -32,6 +33,7 @@ func (h *PublicationHandler) CreatePublication(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: 400, Error: "Некорректные данные публикации"})
 			return
 		}
+		fmt.Println(req.Categories)
 		err := h.sc.Create(&req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
@@ -81,7 +83,6 @@ func (h *PublicationHandler) UpdatePublication(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: 400, Error: "Некорректные данные публикации"})
 		return
 	}
-
 	publication, err := h.sc.FindByID(req.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: "Не удалось получить информацию о публикации"})
