@@ -90,11 +90,11 @@ func initPublicationModule(r *gin.RouterGroup, db *gorm.DB) {
 	sc := service.NewPublicationService(repo, db)
 	h := http.NewPublicationHandler(sc, userSc)
 
-	publicationGroup := r.Group("/publication").Use(middleware.AuthMiddleware())
+	publicationGroup := r.Group("/publication")
 	{
-		publicationGroup.POST("/create", h.CreatePublication)
-		publicationGroup.PUT("/update", h.UpdatePublication)
-		publicationGroup.DELETE("/:id", middleware.ValidateUUID(), h.DeletePublication)
+		publicationGroup.POST("/create", middleware.AuthMiddleware(), h.CreatePublication)
+		publicationGroup.PUT("/update", middleware.AuthMiddleware(), h.UpdatePublication)
+		publicationGroup.DELETE("/:id", middleware.AuthMiddleware(), middleware.ValidateUUID(), h.DeletePublication)
 		publicationGroup.GET("/:id", middleware.ValidateUUID(), h.FindByID)
 	}
 	r.GET("/publication/all", h.FindAllPublications)
