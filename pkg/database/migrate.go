@@ -14,6 +14,7 @@ func Migrate(db *gorm.DB) {
 		&entity.Category{},
 		&entity.PublicationCategories{},
 		&entity.Tutorial{},
+		&entity.FavoritePublications{},
 	)
 	if err != nil {
 		panic(err)

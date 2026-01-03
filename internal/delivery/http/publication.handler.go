@@ -149,3 +149,43 @@ func (h *PublicationHandler) GetAllCategories(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, categories)
 }
+
+func (h *PublicationHandler) GetAllFavByUserID(c *gin.Context) {
+	userID := c.MustGet("userID").(uuid.UUID)
+
+	f, err := h.sc.GetAllFavByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, f)
+}
+func (h *PublicationHandler) CheckIsFavorite(c *gin.Context) {
+	userID := c.MustGet("userID").(uuid.UUID)
+	publicationID := uuid.MustParse(c.Param("id"))
+
+	isFavorite := h.sc.CheckIsFavorite(userID, publicationID)
+	c.JSON(http.StatusOK, isFavorite)
+}
+func (h *PublicationHandler) UpdateFavorite(c *gin.Context) {
+	userID := c.MustGet("userID").(uuid.UUID)
+	id := c.Param("id")
+	publicationID := uuid.MustParse(id)
+	isSave := c.DefaultQuery("is_save", "")
+
+	var err error = nil
+
+	if isSave == "true" {
+		err = h.sc.SaveFavorite(userID, publicationID)
+	} else if isSave == "false" {
+		err = h.sc.RemoveFavorite(userID, publicationID)
+	} else {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: "Некорректные данные: не указано действие"})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, dto.SuccessfulResponse{Message: "Успешно"})
+}

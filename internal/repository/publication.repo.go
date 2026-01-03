@@ -18,6 +18,12 @@ type PublicationRepository interface {
 	FindAll(isDraft bool) ([]entity.Publication, error)
 
 	GetAllCategories() ([]entity.Category, error)
+
+	GetAllFavByUserID(userID uuid.UUID) ([]entity.FavoritePublications, error)
+	CheckIsFavorite(userID, publicationID uuid.UUID) bool
+	SaveFavorite(userID, publicationID uuid.UUID) error
+	RemoveFavorite(userID, publicationID uuid.UUID) error
+	// GetAllFavByPubID(userID uuid.UUID) ([]entity.FavoritePublications, error)
 }
 
 type publicationRepository struct {
@@ -93,3 +99,45 @@ func (p *publicationRepository) GetAllCategories() ([]entity.Category, error) {
 	}
 	return categories, nil
 }
+
+func (p *publicationRepository) GetAllFavByUserID(userID uuid.UUID) ([]entity.FavoritePublications, error) {
+	var fav []entity.FavoritePublications
+	err := p.db.
+		Where("user_id = ?", userID).
+		Preload("Publication").
+		Preload("Publication.PublicationCategories").
+		Preload("Publication.PublicationCategories.Category").
+		Find(&fav).Error
+	if err != nil {
+		return nil, err
+	}
+	return fav, nil
+}
+
+func (p *publicationRepository) CheckIsFavorite(userID, publicationID uuid.UUID) bool {
+	err := p.db.Where("user_id = ? AND publication_id = ?", userID, publicationID).First(&entity.FavoritePublications{}).Error
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+func (p *publicationRepository) SaveFavorite(userID, publicationID uuid.UUID) error {
+	return p.db.Create(&entity.FavoritePublications{
+		UserID:        userID,
+		PublicationID: publicationID,
+	}).Error
+}
+
+func (p *publicationRepository) RemoveFavorite(userID, publicationID uuid.UUID) error {
+	return p.db.Where("user_id = ? AND publication_id = ?", userID, publicationID).Delete(&entity.FavoritePublications{}).Error
+}
+
+//func (p *publicationRepository) GetAllFavByPubID(publicationID uuid.UUID) ([]entity.FavoritePublications, error) {
+//	var fav []entity.FavoritePublications
+//	err := p.db.Where("publication_id = ?", publicationID).Preload("Publication").Find(&fav).Error
+//	if err != nil {
+//		return nil, err
+//	}
+//	return fav, nil
+//}

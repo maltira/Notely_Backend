@@ -17,17 +17,18 @@ type Publication struct {
 	ID          uuid.UUID `json:"id" gorm:"type:uuid;default:gen_random_uuid();primaryKey; not null"`
 	Title       string    `json:"title" gorm:"not null"`
 	Description string    `json:"description" gorm:"not null"`
-	UserID      uuid.UUID `json:"user_id" gorm:"type:uuid;not null"`
+	UserID      uuid.UUID `json:"user_id" gorm:"type:uuid;not null;index"`
 
 	BackgroundColor string `json:"background_color" gorm:"not null;size:7;default:'#F6F6F6'"`
-	IsDraft         bool   `json:"is_draft" gorm:"not null"`
+	IsDraft         bool   `json:"is_draft" gorm:"not null;index"`
 
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
 
 	// Связи
-	User                  User                    `gorm:"foreignKey:UserID;onDelete:CASCADE"`
+	User                  User                    `gorm:"foreignKey:UserID;constraint:onDelete:CASCADE"`
 	PublicationCategories []PublicationCategories `gorm:"foreignKey:PublicationID;constraint:OnDelete:CASCADE"`
+	Favorites             []FavoritePublications  `gorm:"foreignKey:PublicationID;constraint:OnDelete:CASCADE"`
 }
 
 type PublicationCategories struct {
@@ -41,5 +42,13 @@ type PublicationCategories struct {
 
 	// Связи
 	Category    Category    `gorm:"foreignKey:CategoryID"`
+	Publication Publication `gorm:"foreignKey:PublicationID"`
+}
+
+type FavoritePublications struct {
+	ID            uuid.UUID `json:"id" gorm:"type:uuid;default:gen_random_uuid();primaryKey; not null"`
+	UserID        uuid.UUID `json:"user_id" gorm:"type:uuid;not null;uniqueIndex:idx_pub_fav"`
+	PublicationID uuid.UUID `json:"publication_id" gorm:"type:uuid;not null;uniqueIndex:idx_pub_fav"`
+
 	Publication Publication `gorm:"foreignKey:PublicationID"`
 }

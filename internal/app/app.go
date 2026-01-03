@@ -99,7 +99,12 @@ func initPublicationModule(r *gin.RouterGroup, db *gorm.DB) {
 		publicationGroup.GET("/:id", middleware.ValidateUUID(), h.FindByID)
 		publicationGroup.GET("/user/:id/all", middleware.ValidateUUID(), h.FindByUserID)
 		publicationGroup.GET("/all", h.FindAllPublications)
+
 		publicationGroup.GET("/categories/all", h.GetAllCategories)
+
+		publicationGroup.GET("/saved/all", middleware.AuthMiddleware(), h.GetAllFavByUserID)
+		publicationGroup.GET("/saved/:id/check", middleware.AuthMiddleware(), middleware.ValidateUUID(), h.CheckIsFavorite)
+		publicationGroup.POST("/saved/:id", middleware.AuthMiddleware(), middleware.ValidateUUID(), h.UpdateFavorite)
 	}
 
 }

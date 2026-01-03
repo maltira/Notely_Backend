@@ -22,6 +22,12 @@ type PublicationService interface {
 	FindAll(isDraft bool) ([]entity.Publication, error)
 
 	GetAllCategories() (*utils.CategorizedGroups, error)
+
+	GetAllFavByUserID(userID uuid.UUID) ([]entity.FavoritePublications, error)
+	CheckIsFavorite(userID, publicationID uuid.UUID) bool
+	SaveFavorite(userID, publicationID uuid.UUID) error
+	RemoveFavorite(userID, publicationID uuid.UUID) error
+	// GetAllFavByPubID(userID uuid.UUID) ([]entity.FavoritePublications, error)
 }
 
 type publicationService struct {
@@ -189,3 +195,20 @@ func (s *publicationService) GetAllCategories() (*utils.CategorizedGroups, error
 
 	return newCategories, nil
 }
+
+func (s *publicationService) GetAllFavByUserID(userID uuid.UUID) ([]entity.FavoritePublications, error) {
+	return s.repo.GetAllFavByUserID(userID)
+}
+func (s *publicationService) CheckIsFavorite(userID, publicationID uuid.UUID) bool {
+	return s.repo.CheckIsFavorite(userID, publicationID)
+}
+func (s *publicationService) SaveFavorite(userID, publicationID uuid.UUID) error {
+	return s.repo.SaveFavorite(userID, publicationID)
+}
+func (s *publicationService) RemoveFavorite(userID, publicationID uuid.UUID) error {
+	return s.repo.RemoveFavorite(userID, publicationID)
+}
+
+//func (s *publicationService) GetAllFavByPubID(userID uuid.UUID) ([]entity.FavoritePublications, error) {
+//	return s.repo.GetAllFavByUserID(userID)
+//}
