@@ -50,5 +50,6 @@ type FavoritePublications struct {
 	UserID        uuid.UUID `json:"user_id" gorm:"type:uuid;not null;uniqueIndex:idx_pub_fav"`
 	PublicationID uuid.UUID `json:"publication_id" gorm:"type:uuid;not null;uniqueIndex:idx_pub_fav"`
 
-	Publication Publication `gorm:"foreignKey:PublicationID"`
+	Publication Publication `gorm:"foreignKey:PublicationID;constraint:OnDelete:CASCADE"`
+	User        User        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }

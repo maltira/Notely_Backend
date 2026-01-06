@@ -69,6 +69,7 @@ func (p *publicationRepository) FindByUserID(userID uuid.UUID, isDraft bool) ([]
 	err := p.db.
 		Where("is_draft = ?", isDraft).
 		Where("user_id = ?", userID).
+		Preload("User").
 		Preload("PublicationCategories").
 		Preload("PublicationCategories.Category").
 		Find(&publications).Error
@@ -104,6 +105,7 @@ func (p *publicationRepository) GetAllFavByUserID(userID uuid.UUID) ([]entity.Fa
 	var fav []entity.FavoritePublications
 	err := p.db.
 		Where("user_id = ?", userID).
+		Preload("User").
 		Preload("Publication").
 		Preload("Publication.PublicationCategories").
 		Preload("Publication.PublicationCategories.Category").
